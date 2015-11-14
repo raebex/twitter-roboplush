@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Roboplush &amp; Twitter</title>
+    <style>
+      *{
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Inconsolata', Courier, sans-serif;
+        font-size: 1.5rem;
+      }
+
+      .container {
+        width: 100%;
+        margin-top: 230px;
+      }
+
+      #messages {
+        width: 60%;
+        margin: 30px auto;
+      }
+
+      .title {
+        text-align: center;
+        background: #333;
+        color: #fff;
+        padding: 25px 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+      }
+
+      .title h3 {
+        font-weight: 500;
+        padding-top: 10px;
+      }
+
+      .title img {
+        width: 100px;
+      }
+
+      .tweet {
+        list-style-type: none;
+        clear: both;
+        display: block;
+        margin: 40px 0;
+        overflow: auto;
+        zoom: 1;
+        text-align: center;
+      }
+
+    </style>
+    <link href='http://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class="container">
+      <div class="title">
+        <img src="http://rebeccayoung.me/images/roboplush.png"/>
+        <h3>Tweet @Roboplush with an emoji :) :( :/</h3>
+        <!-- <button id="tweet-btn">Tweet</button> -->
+      </div>
+      <ul id="messages"></ul>
+    </div>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      var socket = io();
+      var count = 0;
+      var tag = "";
+      socket.on('chat message', function(robo_tweet){
+          var li = $('<li>');
+          var img = $('<img>');
+          var txt = $('<p>');
+          var title = $('<h3>');
+
+          img.attr('src', robo_tweet.user.profile_image_url);
+          txt.text(robo_tweet.text);
+          title.text("@" + robo_tweet.user.screen_name + " says: ");
+          li.append(img);
+          li.append(title);
+          li.append(txt);
+          li.addClass('tweet');
+
+          $('#messages').prepend(li);
+
+          socket.emit('tweet-to-user', robo_tweet.user.screen_name);
+      });
+
+      $('#tweet-btn').on('click', function(e){
+          e.preventDefault();
+          count++;
+          socket.emit('tweet-content', count);
+      });
+
+    </script>
+  </body>
+</html>

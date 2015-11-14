@@ -1,2 +1,1 @@
-# twitter-roboplush
-A cuddly, amorphous robot that communicates through tweets.
+# Mo: the Twitter Roboplush
